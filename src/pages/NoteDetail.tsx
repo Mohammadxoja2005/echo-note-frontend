@@ -168,7 +168,7 @@ const NoteDetail = () => {
                                     </h2>
                                     <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
                                         <p className="text-sm text-foreground/80 leading-relaxed">
-                                            {note.summary || note.description?.substring(0, 200) + (note.description?.length > 200 ? '...' : '') || 'No summary available'}
+                                            {note.summerizedText || note.summerizedText || 'No summary available'}
                                         </p>
                                     </div>
                                 </div>

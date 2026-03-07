@@ -3,6 +3,7 @@ export interface Note {
     id: string;
     title: string;
     description: string;
+    summerizedText: string;
     content: string;
     summary?: string;
     timestamp: number;
