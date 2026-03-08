@@ -9,6 +9,7 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {toast} from '@/hooks/use-toast';
 import axios from "axios";
+import ReactMarkdown from 'react-markdown';
 
 const NoteDetail = () => {
     const {id} = useParams();
@@ -166,10 +167,17 @@ const NoteDetail = () => {
                                     <h2 className="text-lg font-semibold mb-3 text-primary border-b border-primary/20 pb-2">
                                         📋 Summary
                                     </h2>
-                                    <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
-                                        <p className="text-sm text-foreground/80 leading-relaxed">
-                                            {note.summerizedText || note.summerizedText || 'No summary available'}
-                                        </p>
+                                    <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary text-sm text-foreground/80">
+                                        <ReactMarkdown
+                                            components={{
+                                                h2: ({children}) => <h2 className="text-sm font-semibold text-primary mt-4 mb-2 first:mt-0">{children}</h2>,
+                                                p: ({children}) => <p className="leading-relaxed mb-2">{children}</p>,
+                                                ul: ({children}) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
+                                                li: ({children}) => <li className="leading-relaxed">{children}</li>,
+                                            }}
+                                        >
+                                            {note.summerizedText || 'No summary available'}
+                                        </ReactMarkdown>
                                     </div>
                                 </div>
 
