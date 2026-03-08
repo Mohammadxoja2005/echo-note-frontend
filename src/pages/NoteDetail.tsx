@@ -7,6 +7,7 @@ import {format} from 'date-fns';
 import {ArrowLeft, Edit, FileText} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {toast} from '@/hooks/use-toast';
 import axios from "axios";
 import ReactMarkdown from 'react-markdown';
@@ -162,34 +163,35 @@ const NoteDetail = () => {
                                     Created on {format(note.createdAt, 'MMMM d, yyyy - h:mm a')}
                                 </p>
 
-                                {/* Summary Section */}
-                                <div className="mb-8">
-                                    <h2 className="text-lg font-semibold mb-3 text-primary border-b border-primary/20 pb-2">
-                                        📋 Summary
-                                    </h2>
-                                    <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary text-sm text-foreground/80">
-                                        <ReactMarkdown
-                                            components={{
-                                                h2: ({children}) => <h2 className="text-sm font-semibold text-primary mt-4 mb-2 first:mt-0">{children}</h2>,
-                                                p: ({children}) => <p className="leading-relaxed mb-2">{children}</p>,
-                                                ul: ({children}) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
-                                                li: ({children}) => <li className="leading-relaxed">{children}</li>,
-                                            }}
-                                        >
-                                            {note.summerizedText || 'No summary available'}
-                                        </ReactMarkdown>
-                                    </div>
-                                </div>
+                                <Tabs defaultValue="summary">
+                                    <TabsList className="mb-4">
+                                        <TabsTrigger value="summary">📋 Summary</TabsTrigger>
+                                        <TabsTrigger value="transcript">📝 Transcript</TabsTrigger>
+                                    </TabsList>
 
-                                {/* Original Note Section */}
-                                <div>
-                                    <h2 className="text-lg font-semibold mb-3 text-secondary-foreground border-b border-gray-200 pb-2">
-                                        📝 Original Note
-                                    </h2>
-                                    <div className="prose max-w-none bg-gray-50 p-4 rounded-lg">
-                                        <p className="whitespace-pre-wrap text-sm leading-relaxed">{note.description}</p>
-                                    </div>
-                                </div>
+                                    <TabsContent value="summary">
+                                        <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary text-sm text-foreground/80">
+                                            <ReactMarkdown
+                                                components={{
+                                                    h2: ({children}) => <h2 className="text-sm font-semibold text-primary mt-4 mb-2 first:mt-0">{children}</h2>,
+                                                    p: ({children}) => <p className="leading-relaxed mb-2">{children}</p>,
+                                                    ul: ({children}) => <ul className="list-disc pl-5 space-y-1">{children}</ul>,
+                                                    li: ({children}) => <li className="leading-relaxed">{children}</li>,
+                                                }}
+                                            >
+                                                {note.summerizedText || 'No summary available'}
+                                            </ReactMarkdown>
+                                        </div>
+                                    </TabsContent>
+
+                                    <TabsContent value="transcript">
+                                        <div className="prose max-w-none bg-gray-50 p-4 rounded-lg">
+                                            <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                                                {note.description || 'No transcript available'}
+                                            </p>
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
                             </div>
                         )}
                     </div>
