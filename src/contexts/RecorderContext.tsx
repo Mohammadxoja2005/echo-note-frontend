@@ -386,47 +386,62 @@ export const RecorderProvider: React.FC<{
         }
     };
 
-    // Start recording from system audio (other tabs, apps, etc.)
+    // Start recording from system audio + microphone mixed together
     const startSystemRecording = async () => {
         try {
             setIsRecording(true);
             setIsPaused(false);
             setIsVoiceActive(false);
 
+            // Get system audio via screen share
             const displayStream = await navigator.mediaDevices.getDisplayMedia({ audio: true, video: true });
-
-            // Stop video tracks — we only need audio
             displayStream.getVideoTracks().forEach(track => track.stop());
 
-            const audioTracks = displayStream.getAudioTracks();
-            if (audioTracks.length === 0) {
+            if (displayStream.getAudioTracks().length === 0) {
                 setIsRecording(false);
                 toast({
                     title: "No system audio",
-                    description: "No audio track was found. Make sure to check 'Share audio' when prompted.",
+                    description: "No audio track found. Make sure to check 'Share audio' when prompted.",
                     variant: "destructive"
                 });
                 return;
             }
 
-            const audioStream = new MediaStream(audioTracks);
-            streamRef.current = audioStream;
+            // Get microphone audio
+            const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-            // Stop recording if the user stops sharing from the browser UI
-            audioTracks[0].addEventListener('ended', () => {
-                stopRecording();
-            });
+            // Mix both streams via Web Audio API
+            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            audioContext.current = ctx;
 
-            // Set up Web Audio API for visualization
-            audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-            analyserNode.current = audioContext.current.createAnalyser();
+            const destination = ctx.createMediaStreamDestination();
+
+            // Microphone source — also used for visualization
+            const micSource = ctx.createMediaStreamSource(micStream);
+            micSource.connect(destination);
+
+            // System audio source
+            const systemSource = ctx.createMediaStreamSource(displayStream);
+            systemSource.connect(destination);
+
+            // Hook up analyser to mic for voice activity visualization
+            analyserNode.current = ctx.createAnalyser();
             analyserNode.current.fftSize = 2048;
-            sourceNode.current = audioContext.current.createMediaStreamSource(audioStream);
-            sourceNode.current.connect(analyserNode.current);
+            micSource.connect(analyserNode.current);
+
+            // Store mic stream for cleanup
+            streamRef.current = micStream;
+
+            // Stop recording if system share is stopped from browser UI
+            displayStream.getAudioTracks()[0].addEventListener('ended', () => {
+                stopRecording();
+                micStream.getTracks().forEach(t => t.stop());
+            });
 
             updateAudioData();
 
-            mediaRecorderRef.current = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus' });
+            // Record from the merged destination stream
+            mediaRecorderRef.current = new MediaRecorder(destination.stream, { mimeType: 'audio/webm;codecs=opus' });
 
             mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
                 if (event.data.size > 0) {
@@ -444,8 +459,8 @@ export const RecorderProvider: React.FC<{
             mediaRecorderRef.current.start(1000);
 
             toast({
-                title: "System recording started",
-                description: "Capturing audio from your screen share"
+                title: "Desktop recording started",
+                description: "Recording your voice and system audio together"
             });
 
         } catch (error) {
@@ -453,7 +468,7 @@ export const RecorderProvider: React.FC<{
             setIsRecording(false);
             toast({
                 title: "Permission Denied",
-                description: "Please allow screen sharing with audio to record system audio",
+                description: "Please allow both screen sharing (with audio) and microphone access",
                 variant: "destructive"
             });
         }
