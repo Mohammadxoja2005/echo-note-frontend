@@ -1,6 +1,6 @@
 
 import {Button} from '@/components/ui/button';
-import {Mic, Save, Trash, Pause, Play, Square, Loader} from 'lucide-react';
+import {Mic, Monitor, Save, Trash, Pause, Play, Square, Loader} from 'lucide-react';
 import {useRecorder} from '@/contexts/RecorderContext';
 
 const RecorderControls = () => {
@@ -10,6 +10,7 @@ const RecorderControls = () => {
         audioBlob,
         isTranscribing,
         startRecording,
+        startSystemRecording,
         pauseRecording,
         continueRecording,
         stopRecording,
@@ -20,14 +21,25 @@ const RecorderControls = () => {
     return (
         <div className="flex justify-center space-x-3 pt-2">
             {!isRecording && !isPaused && !audioBlob && (
-                <Button
-                    onClick={startRecording}
-                    disabled={isTranscribing}
-                    className="bg-echonote-purple text-white hover:bg-echonote-purple/90 flex gap-2"
-                >
-                    <Mic size={18}/>
-                    Start Recording
-                </Button>
+                <>
+                    <Button
+                        onClick={startRecording}
+                        disabled={isTranscribing}
+                        className="bg-echonote-purple text-white hover:bg-echonote-purple/90 flex gap-2"
+                    >
+                        <Mic size={18}/>
+                        Record Voice
+                    </Button>
+                    <Button
+                        onClick={startSystemRecording}
+                        disabled={isTranscribing}
+                        variant="outline"
+                        className="flex gap-2"
+                    >
+                        <Monitor size={18}/>
+                        Record Desktop
+                    </Button>
+                </>
             )}
 
             {/*{!isRecording && !isPaused && audioBlob && (*/}

@@ -22,6 +22,7 @@ type RecorderContextType = {
     analyserNode: React.MutableRefObject<AnalyserNode | null>;
     audioData: React.MutableRefObject<Float32Array | null>;
     startRecording: () => Promise<void>;
+    startSystemRecording: () => Promise<void>;
     pauseRecording: () => void;
     continueRecording: () => void;
     stopRecording: () => void;
@@ -385,6 +386,79 @@ export const RecorderProvider: React.FC<{
         }
     };
 
+    // Start recording from system audio (other tabs, apps, etc.)
+    const startSystemRecording = async () => {
+        try {
+            setIsRecording(true);
+            setIsPaused(false);
+            setIsVoiceActive(false);
+
+            const displayStream = await navigator.mediaDevices.getDisplayMedia({ audio: true, video: true });
+
+            // Stop video tracks — we only need audio
+            displayStream.getVideoTracks().forEach(track => track.stop());
+
+            const audioTracks = displayStream.getAudioTracks();
+            if (audioTracks.length === 0) {
+                setIsRecording(false);
+                toast({
+                    title: "No system audio",
+                    description: "No audio track was found. Make sure to check 'Share audio' when prompted.",
+                    variant: "destructive"
+                });
+                return;
+            }
+
+            const audioStream = new MediaStream(audioTracks);
+            streamRef.current = audioStream;
+
+            // Stop recording if the user stops sharing from the browser UI
+            audioTracks[0].addEventListener('ended', () => {
+                stopRecording();
+            });
+
+            // Set up Web Audio API for visualization
+            audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+            analyserNode.current = audioContext.current.createAnalyser();
+            analyserNode.current.fftSize = 2048;
+            sourceNode.current = audioContext.current.createMediaStreamSource(audioStream);
+            sourceNode.current.connect(analyserNode.current);
+
+            updateAudioData();
+
+            mediaRecorderRef.current = new MediaRecorder(audioStream, { mimeType: 'audio/webm;codecs=opus' });
+
+            mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+
+                    const updatedBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+                    setAudioBlob(updatedBlob);
+
+                    if (audioUrl) URL.revokeObjectURL(audioUrl);
+                    const newUrl = URL.createObjectURL(updatedBlob);
+                    setAudioUrl(newUrl);
+                }
+            });
+
+            mediaRecorderRef.current.start(1000);
+
+            toast({
+                title: "System recording started",
+                description: "Capturing audio from your screen share"
+            });
+
+        } catch (error) {
+            console.error('Error starting system recording:', error);
+            setIsRecording(false);
+            toast({
+                title: "Permission Denied",
+                description: "Please allow screen sharing with audio to record system audio",
+                variant: "destructive"
+            });
+        }
+    };
+
     // Pause recording
     const pauseRecording = () => {
         const rec = mediaRecorderRef.current;
@@ -683,6 +757,7 @@ export const RecorderProvider: React.FC<{
         analyserNode,
         audioData,
         startRecording,
+        startSystemRecording,
         pauseRecording,
         continueRecording,
         stopRecording,
