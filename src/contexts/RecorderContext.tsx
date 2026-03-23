@@ -58,6 +58,7 @@ export const RecorderProvider: React.FC<{
     const audioChunksRef = useRef<Blob[]>([]);
     const base64ChunksRef = useRef<string[]>([]);
     const streamRef = useRef<MediaStream | null>(null);
+    const displayStreamRef = useRef<MediaStream | null>(null);
     const audioContext = useRef<AudioContext | null>(null);
     const analyserNode = useRef<AnalyserNode | null>(null);
     const sourceNode = useRef<MediaStreamAudioSourceNode | null>(null);
@@ -429,13 +430,13 @@ export const RecorderProvider: React.FC<{
             analyserNode.current.fftSize = 2048;
             micSource.connect(analyserNode.current);
 
-            // Store mic stream for cleanup
+            // Store both streams for cleanup
             streamRef.current = micStream;
+            displayStreamRef.current = displayStream;
 
-            // Stop recording if system share is stopped from browser UI
+            // Stop recording if system share is stopped from Chrome's "Stop sharing" UI
             displayStream.getAudioTracks()[0].addEventListener('ended', () => {
                 stopRecording();
-                micStream.getTracks().forEach(t => t.stop());
             });
 
             updateAudioData();
@@ -571,7 +572,13 @@ export const RecorderProvider: React.FC<{
     // Stop recording
     const stopRecording = () => {
         if (mediaRecorderRef.current) {
-            mediaRecorderRef.current.stop();
+            try {
+                if (mediaRecorderRef.current.state !== 'inactive') {
+                    mediaRecorderRef.current.stop();
+                }
+            } catch (err) {
+                console.error("Error stopping MediaRecorder:", err);
+            }
 
             // Stop the animation frame
             if (animationFrameRef.current) {
@@ -585,10 +592,16 @@ export const RecorderProvider: React.FC<{
                 dataUpdateIntervalRef.current = null;
             }
 
-            // Stop the media stream
+            // Stop mic stream
             if (streamRef.current) {
                 streamRef.current.getTracks().forEach(track => track.stop());
                 streamRef.current = null;
+            }
+
+            // Stop display stream
+            if (displayStreamRef.current) {
+                displayStreamRef.current.getTracks().forEach(track => track.stop());
+                displayStreamRef.current = null;
             }
 
             // Disconnect audio nodes
@@ -736,6 +749,10 @@ export const RecorderProvider: React.FC<{
 
             if (streamRef.current) {
                 streamRef.current.getTracks().forEach(track => track.stop());
+            }
+
+            if (displayStreamRef.current) {
+                displayStreamRef.current.getTracks().forEach(track => track.stop());
             }
 
             if (sourceNode.current) {
