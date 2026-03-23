@@ -2,10 +2,20 @@ import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {toast} from "@/hooks/use-toast";
-import {Mail} from "lucide-react";
+import {Mail, ExternalLink} from "lucide-react";
 import axios from "axios";
 import {useAtom} from "jotai/index";
 import {IsUserLoggedInAtom} from "@/store/store.ts";
+
+const getInboxUrl = (email: string): string => {
+    const domain = email.split('@')[1]?.toLowerCase() || '';
+    if (domain === 'gmail.com') return 'https://mail.google.com';
+    if (domain === 'yahoo.com' || domain === 'yahoo.co.uk') return 'https://mail.yahoo.com';
+    if (['outlook.com', 'hotmail.com', 'live.com', 'msn.com'].includes(domain)) return 'https://outlook.live.com';
+    if (domain === 'icloud.com' || domain === 'me.com') return 'https://www.icloud.com/mail';
+    if (domain === 'proton.me' || domain === 'protonmail.com') return 'https://mail.proton.me';
+    return `https://mail.${domain}`;
+};
 
 interface EmailSignInProps {
     onSuccess?: () => void;
@@ -78,6 +88,13 @@ export const EmailSignIn = ({onSuccess, className}: EmailSignInProps) => {
                 <p className="text-muted-foreground mb-4">
                     We've sent a magic link to <span className="font-medium">{email}</span>
                 </p>
+                <Button
+                    className="w-full mb-4 flex gap-2"
+                    onClick={() => window.open(getInboxUrl(email), '_blank')}
+                >
+                    <ExternalLink size={16}/>
+                    Open Inbox
+                </Button>
                 <p className="text-sm text-muted-foreground">
                     Didn't receive an email? Check your spam folder or{" "}
                     <button
