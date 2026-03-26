@@ -425,10 +425,11 @@ export const RecorderProvider: React.FC<{
             const systemSource = ctx.createMediaStreamSource(displayStream);
             systemSource.connect(destination);
 
-            // Hook up analyser to mic for voice activity visualization
+            // Hook up analyser to both mic and system audio for visualization
             analyserNode.current = ctx.createAnalyser();
             analyserNode.current.fftSize = 2048;
             micSource.connect(analyserNode.current);
+            systemSource.connect(analyserNode.current);
 
             // Store both streams for cleanup
             streamRef.current = micStream;
