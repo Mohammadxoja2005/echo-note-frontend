@@ -12,20 +12,31 @@ const FAKE_TRANSCRIPTIONS = [
     "Update the project timeline and share with stakeholders."
 ];
 
-export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
-    try {
-        const formData = new FormData();
-        formData.append("file", audioBlob, "audio.webm");
+export const uploadAudioToStorage = async (audioBlob: Blob): Promise<string> => {
+    const { data } = await axios.post(
+        "https://echonote.justbackend.xyz/text-to-speech/presigned-url",
+        {},
+        { headers: { Token: localStorage.getItem("token") } }
+    );
 
-        await axios.post("https://echonote.justbackend.xyz/text-to-speech/audio", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Token: localStorage.getItem("token")
-            },
-        }).catch((error) => {
-            alert(error);
+    const { url, key } = data as { url: string; key: string };
+
+    await axios.put(url, audioBlob, {
+        headers: { "Content-Type": "audio/webm" },
+    });
+
+    return key;
+};
+
+export const transcribeAudio = async (key: string): Promise<string> => {
+    try {
+        await axios.post(
+            "http://localhost:3001/text-to-speech/audio",
+            { key },
+            { headers: { Token: localStorage.getItem("token") } },
+        ).catch((error) => {
             console.log("error", error);
-        })
+        });
 
         const randomIndex = Math.floor(Math.random() * FAKE_TRANSCRIPTIONS.length);
         return FAKE_TRANSCRIPTIONS[randomIndex];

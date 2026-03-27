@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState, useRef, useCallback, useEffect} from 'react';
 import {useToast} from '@/hooks/use-toast';
-import {transcribeAudio, generateTitleFromContent, generateSummary} from '@/utils/transcription';
+import {transcribeAudio, generateTitleFromContent, generateSummary, uploadAudioToStorage} from '@/utils/transcription';
 import {saveNote, Note, saveUnsavedRecording, loadNotes, blobToBase64, NoteStatus} from '@/utils/storage';
 
 type RecorderContextType = {
@@ -665,10 +665,19 @@ export const RecorderProvider: React.FC<{
                     );
                 }
 
+                let storageKey: string | null = null;
+                try {
+                    storageKey = await uploadAudioToStorage(audioBlob);
+                } catch (uploadError) {
+                    console.error('Error uploading audio to storage:', uploadError);
+                }
+
                 let text = '';
                 try {
                     // Try to transcribe the audio
-                    text = await transcribeAudio(audioBlob);
+                    if (storageKey) {
+                        text = await transcribeAudio(storageKey);
+                    }
                     // setTranscription(text);
                 } catch (error) {
                     console.error('Transcription error:', error);
