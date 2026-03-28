@@ -97,12 +97,12 @@ const Header = () => {
                             <span className="text-xl font-semibold text-gray-900">EchoNote</span>
                         </Link>
                         <div className="hidden md:flex md:gap-x-6">
-                            <Link to="/" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
-                                Home
-                            </Link>
                             <Link to="/pricing" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
                                 Pricing
                             </Link>
+                            <a href="#faq" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
+                                FAQ
+                            </a>
                             {/*{isUserLoggedIn && (*/}
                             {/*    <Link to="/dashboard"*/}
                             {/*          className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">*/}
@@ -160,19 +160,19 @@ const Header = () => {
                     <div className="md:hidden">
                         <div className="space-y-1 px-4 py-3 border-t border-gray-200">
                             <Link
-                                to="/"
-                                className="block py-2 text-base font-medium text-gray-900 hover:text-echonote-purple"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Home
-                            </Link>
-                            <Link
                                 to="/pricing"
                                 className="block py-2 text-base font-medium text-gray-900 hover:text-echonote-purple"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Pricing
                             </Link>
+                            <a
+                                href="#faq"
+                                className="block py-2 text-base font-medium text-gray-900 hover:text-echonote-purple"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                FAQ
+                            </a>
                             {isUserLoggedIn && (
                                 <Link
                                     to="/dashboard"

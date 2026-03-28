@@ -200,7 +200,7 @@ const Index = () => {
                                 <div className="space-y-5">
                                     <div className="flex gap-4">
                                         <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-echonote-purple/10 flex items-center justify-center">
-                                            <BotOff size={14} className="text-echonote-purple"/>
+                                            <BotOff size={20} className="text-echonote-purple"/>
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-900">No awkward bot in the room</h4>
@@ -209,7 +209,7 @@ const Index = () => {
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-echonote-purple/10 flex items-center justify-center">
-                                            <Mic size={14} className="text-echonote-purple"/>
+                                            <Mic size={20} className="text-echonote-purple"/>
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-900">Works on any platform</h4>
@@ -218,7 +218,7 @@ const Index = () => {
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="mt-1 h-6 w-6 shrink-0 rounded-full bg-echonote-purple/10 flex items-center justify-center">
-                                            <FileText size={14} className="text-echonote-purple"/>
+                                            <FileText size={20} className="text-echonote-purple"/>
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-gray-900">Notes ready before the next meeting</h4>

@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const FAQ = () => {
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section id="faq" className="py-16 md:py-24 bg-white">
       <div className="notion-container">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
