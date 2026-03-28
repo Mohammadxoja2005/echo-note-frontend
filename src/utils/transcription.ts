@@ -31,7 +31,7 @@ export const uploadAudioToStorage = async (audioBlob: Blob): Promise<string> => 
 export const transcribeAudio = async (key: string): Promise<string> => {
     try {
         await axios.post(
-            "http://localhost:3001/text-to-speech/audio",
+            "https://echonote.justbackend.xyz/text-to-speech/audio",
             { key },
             { headers: { Token: localStorage.getItem("token") } },
         ).catch((error) => {
