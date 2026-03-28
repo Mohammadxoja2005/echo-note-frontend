@@ -63,7 +63,7 @@ const Index = () => {
                                 <div className="mt-8 flex flex-col sm:flex-row gap-4">
                                     <Link to="/dashboard">
                                         <Button className="bg-echonote-purple text-white hover:bg-echonote-purple/90 px-6 py-3 text-base">
-                                            Start Recording Free
+                                            Start Recording
                                         </Button>
                                     </Link>
                                 </div>
