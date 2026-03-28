@@ -94,23 +94,23 @@ const NoteDetail = () => {
         );
     }
 
-    if (!note) {
-        return (
-            <div className="flex flex-col min-h-screen">
-                <Header/>
-                <main className="flex-grow flex items-center justify-center">
-                    <div className="text-center">
-                        <h1 className="text-2xl font-bold mb-4">Note Not Found</h1>
-                        <Button onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
-                    </div>
-                </main>
-            </div>
-        );
-    }
+    // if (!note) {
+    //     return (
+    //         <div className="flex flex-col min-h-screen">
+    //             <Header/>
+    //             <main className="flex-grow flex items-center justify-center">
+    //                 <div className="text-center">
+    //                     <h1 className="text-2xl font-bold mb-4">Note Not Found</h1>
+    //                     <Button onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
+    //                 </div>
+    //             </main>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="flex flex-col min-h-screen">
-            <Header/>
+            {/*<Header/>*/}
             <main className="flex-grow bg-echonote-light/30 p-6">
                 <div className="max-w-3xl mx-auto">
                     <div className="flex justify-between items-center mb-6">
