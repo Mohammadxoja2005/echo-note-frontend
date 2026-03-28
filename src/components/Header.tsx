@@ -100,12 +100,9 @@ const Header = () => {
                             <Link to="/" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
                                 Home
                             </Link>
-                            <Link to="/blog" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
-                                Blog
+                            <Link to="/pricing" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">
+                                Pricing
                             </Link>
-                            {/*<Link to="/pricing" className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">*/}
-                            {/*    Pricing*/}
-                            {/*</Link>*/}
                             {/*{isUserLoggedIn && (*/}
                             {/*    <Link to="/dashboard"*/}
                             {/*          className="text-sm font-semibold text-gray-900 hover:text-echonote-purple">*/}
@@ -168,13 +165,6 @@ const Header = () => {
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Home
-                            </Link>
-                            <Link
-                                to="/blog"
-                                className="block py-2 text-base font-medium text-gray-900 hover:text-echonote-purple"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Blog
                             </Link>
                             <Link
                                 to="/pricing"
