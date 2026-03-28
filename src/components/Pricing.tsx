@@ -54,7 +54,6 @@ export const Pricing = () => {
                             <ul className="space-y-3">
                                 {[
                                     "Unlimited notes",
-                                    "1h recording",
                                     "Advanced transcription features",
                                     "Priority customer support",
                                     "Store and organize your notes"
