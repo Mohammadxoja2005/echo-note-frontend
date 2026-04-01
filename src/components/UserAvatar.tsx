@@ -105,7 +105,7 @@ const UserAvatar = () => {
                     <DialogHeader>
                         <DialogTitle>Subscription Management</DialogTitle>
                         <DialogDescription>
-                            You are currently subscribed to our {user.subscription?.plan ? "Premium" : "Trial"} Plan.
+                            You are currently subscribed to our {user.subscription?.plan} Plan.
                         </DialogDescription>
                     </DialogHeader>
                     {/*<div className="py-4">*/}
