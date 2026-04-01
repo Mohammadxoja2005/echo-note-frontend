@@ -21,7 +21,7 @@ import AccessDenied from '@/components/AccessDenied';
 import axios from "axios";
 import TrialBanner from '@/components/TrialBanner';
 
-const DashboardLayout = ({ showTrialBanner, daysLeft }: { showTrialBanner: boolean; daysLeft: number | null }) => {
+const DashboardLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { setOpenMobile } = useSidebar();
@@ -41,11 +41,7 @@ const DashboardLayout = ({ showTrialBanner, daysLeft }: { showTrialBanner: boole
     };
 
     return (
-        <div className="flex flex-col h-screen w-full">
-            {showTrialBanner && daysLeft !== null && (
-                <TrialBanner daysLeft={daysLeft}/>
-            )}
-            <div className="flex flex-grow overflow-hidden">
+        <div className="flex w-full overflow-hidden" style={{height: '100%'}}>
                 <Sidebar collapsible="icon" variant="sidebar" className="shrink-0">
                     <SidebarHeader>
                         <div className="flex items-center">
@@ -101,7 +97,7 @@ const DashboardLayout = ({ showTrialBanner, daysLeft }: { showTrialBanner: boole
                     </SidebarContent>
                 </Sidebar>
 
-                <main className="flex-grow bg-echonote-light/30 overflow-auto flex flex-col min-w-0">
+                <main className="flex-1 bg-echonote-light/30 overflow-auto flex flex-col min-w-0">
                     <div className="px-4 md:px-6 py-3 md:py-4 flex justify-between items-center border-b bg-white/50 backdrop-blur-sm sticky top-0 z-10">
                         <div className="flex items-center gap-2 md:gap-4 min-w-0">
                             <SidebarTrigger className="md:hidden" />
@@ -119,7 +115,6 @@ const DashboardLayout = ({ showTrialBanner, daysLeft }: { showTrialBanner: boole
                         <Outlet/>
                     </div>
                 </main>
-            </div>
         </div>
     );
 };
@@ -170,13 +165,17 @@ const Dashboard = () => {
         return null;
     }
 
-    // Determine if the trial banner should be shown
     const showTrialBanner = user.subscription?.plan === 'trial' && user.daysLeft !== null && user.daysLeft !== undefined;
 
     return (
-        <SidebarProvider>
-            <DashboardLayout showTrialBanner={showTrialBanner} daysLeft={user.daysLeft ?? null} />
-        </SidebarProvider>
+        <div className="flex flex-col h-screen w-full">
+            {showTrialBanner && user.daysLeft != null && (
+                <TrialBanner daysLeft={user.daysLeft}/>
+            )}
+            <SidebarProvider className="flex-1 overflow-hidden">
+                <DashboardLayout />
+            </SidebarProvider>
+        </div>
     );
 };
 

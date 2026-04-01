@@ -17,7 +17,7 @@ const TrialBanner = ({ daysLeft }: TrialBannerProps) => {
                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
               </svg>
             </span>
-            <p className="ml-3 font-medium text-amber-700">
+            <p className="ml-6 font-medium text-amber-700">
               <span>Your trial ends in <strong>{daysLeft} {daysLeft === 1 ? 'day' : 'days'}</strong>! Upgrade now to continue enjoying premium features.</span>
             </p>
           </div>
